@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const control1 = require('../controllers/livre');
-const control2 = require('../controllers/catégorie');
+const control2 = require('../controllers/categorie');
 const control3 = require('../controllers/utilisateur');
 
 

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const livreSchema = new mongoose.Schema({
+const LivreSchema = new mongoose.Schema({
     titre: {
         type: String,
         required: true
@@ -9,19 +9,23 @@ const livreSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    édition: {
+    edition: {
         type: String,
         required: true
     },
-    année: {
+    annee: {
         type: Number,
         required: true
     },
     nom_cat: {
         type: mongoose.SchemaTypes.ObjectId,
-        ref: "catégorie"
+        ref: "categorie"
+    },
+    nbr_emprunt:{
+      type:Number,
+      default:0
     }
 });
 
 
-module.exports = mongoose.model('livre', livreSchema);
+module.exports = mongoose.model('livre', LivreSchema);

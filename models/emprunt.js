@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const empruntSchema = new mongoose.Schema({
+const EmpruntSchema = new mongoose.Schema({
     nom_utilisateur: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: "utilisateur"
@@ -12,4 +12,4 @@ const empruntSchema = new mongoose.Schema({
 });
 
 
-module.exports = mongoose.model('emprunt', empruntSchema);
+module.exports = mongoose.model('emprunt', EmpruntSchema);

@@ -51,23 +51,23 @@ router.delete('/livres', control1.supprimerLivre);
 
 
 //afficher tous les catégories
-router.get('/catégories', control2.afficherToutesCat);
+router.get('/categories', control2.afficherToutesCat);
 
 
 //afficher une catégorie
-router.get('/catégories/:id', control2.afficherCatégorie);
+router.get('/categories/:id', control2.afficherCategorie);
 
 
 //ajouter une catégorie
-router.post('/catégories', control2.ajouterCatégorie);
+router.post('/categories', control2.ajouterCategorie);
 
 
 //supprimer une catégorie
-router.delete('/catégories', control2.supprimerCatégorie);
+router.delete('/categories', control2.supprimerCategorie);
 
 
 //modifier une catégorie
-router.patch('/catégories', control2.modifierCatégorie);
+router.patch('/categories', control2.modifierCategorie);
 
 
 

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const EmpruntSchema = new mongoose.Schema({
+const CommentaireSchema = new mongoose.Schema({
     user_id: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: "utilisateur",
@@ -11,19 +11,11 @@ const EmpruntSchema = new mongoose.Schema({
         ref: "livre",
         required : true
     },
-    date_emprunt: {
-        type : Date,
-        required : true
-    },
-    date_retour: {
-        type : Date,
-        required : true
-    },
-    jours: {
-        type : Number,
+    comment: {
+        type: String,
         required : true
     }
 });
 
 
-module.exports = mongoose.model('emprunt', EmpruntSchema);
+module.exports = mongoose.model('commentaire', CommentaireSchema);

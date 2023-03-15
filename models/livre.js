@@ -17,9 +17,14 @@ const LivreSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    nom_cat: {
+    note: {
+        type: Number,
+        required: true
+    },
+    cat_id: {
         type: mongoose.SchemaTypes.ObjectId,
-        ref: "categorie"
+        ref: "categorie",
+        required : true
     },
     nbr_emprunt:{
       type:Number,

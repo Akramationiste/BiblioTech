@@ -1,57 +1,39 @@
 const Livre = require('../models/livre');
 const Categorie = require('../models/categorie');
-const categorie = require('../models/categorie');
-
-// functions : livres
-
-// async function ajouterLivre(req, res){
-//     let livre = new Livre({
-//         titre: req.body.titre,
-//         auteur: req.body.auteur,
-//         edition: req.body.edition,
-//         annee: req.body.annee,
-//         nom_cat: req.body.nom_cat,
-//         nbr_emprunt: req.body.nbr_emprunt
-//     });
-//     try {
-//         const nouveauLivre = await livre.save(); 
-//         res.status(201).json(nouveauLivre); 
-        
-//         const categorieModifiee = await Categorie.findOneAndUpdate(
-//             { nom_cat: req.body.nom_cat },
-//             { $inc: { nbr_livres: 1 } }
-//         );
-//     } catch (err) {
-//         res.status(400).json({ message: err.message }); 
-//     };
-// };
 
 
 
-async function  ajouterLivre (req, res) {
-  const categorie = req.body.categorie
+
+
+
+
+async function ajouterLivre(req, res) {
+  const { titre, auteur, edition, annee, note, cat_id } = req.body;
+
   try {
-      const nv_livre = new Livre({
-        titre: req.body.titre,
-        auteur: req.body.auteur,
-        edition: req.body.edition,
-        annee: req.body.annee,
-        nom_cat: req.body.nom_cat,
-        nbr_emprunt: req.body.nbr_emprunt
-      });
+    const livre = new Livre({
+      titre,
+      auteur,
+      edition,
+      annee,
+      note,
+      cat_id,
+    });
 
-      const categorieModifiee = await Categorie.findOne({
-          name: categorie,
-          $inc: {nbr_livres: 1}
-      });
-      await categorieModifiee.save();
-      await nv_livre.save()
-      res.send(nbr_livres);
+    const categorie = await Categorie.findByIdAndUpdate(
+      cat_id,
+      { $inc: { nbr_livres: 1 } },
+      { new: true }
+    );
+
+    await livre.save();
+
+    res.status(201).json({ livre, categorie });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
-  catch (err) {
-      console.log(err);
-  }
-};
+}
+
 
 
 
@@ -67,6 +49,36 @@ async function afficherLivre(req, res){
         return res.status(500).json({ message: err.message })
     }
 };
+
+
+
+
+
+
+async function afficherLivreFiltre(req, res) {
+  try {
+    let filters = {};
+    if (req.query.note) {
+      filters.note = req.query.note;
+    }
+    if (req.query.nbr_emprunt) {
+      filters.nbr_emprunt = req.query.nbr_emprunt;
+    }
+    if (req.query.auteur) {
+      filters.auteur = req.query.auteur;
+    }
+    if (req.query.cat_id) {
+      filters.cat_id = req.query.cat_id;
+    }
+    const livres = await Livre.find(filters).populate('cat_id');
+    res.status(200).json(livres);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
+
+
 
 async function afficherTousLivres(req, res){
     try {
@@ -93,6 +105,7 @@ async function supprimerLivre(req, res){
 
 module.exports = {
     ajouterLivre,
+    afficherLivreFiltre,
     afficherLivre,
     afficherTousLivres,
     supprimerLivre

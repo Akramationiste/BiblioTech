@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const nodemailer = require ('nodemailer');
 const app = express();
 const router = require("./routes/auth");
 const authRouter = require('./routes/auth');
@@ -22,6 +23,53 @@ app.use('/auth', authRouter);
 // connect to mongodb
 mongoose.connect('mongodb+srv://Fabrikademy:Fabrikademy@fabrikademy.utr52c0.mongodb.net/?retryWrites=true&w=majority');
 app.listen(3000, () => console.log('Server started'));
+
+
+function sendEmail() {
+    return new Promise((resolve, reject) => {
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+        
+              user: 'muchamucha92@gmail.com',
+              pass: 'cheevxaljturbdbq'
+            }
+        })         
+           const mail_configs = {
+            from: 'muchamucha92@gmail.com',
+            to: user.email,
+            subject: 'enregistrement avec succès !',
+            text: 'Merci à vous.'
+          }
+          transporter.sendMail(mail_configs , function(error, info){
+            if(error){
+                console.log(error)
+                reject({message:"erreur trouvé !!"})
+            }
+            return resolve ({message:"email envoyé avec succès"})
+          })
+    })
+}
+
+app.get("/" , (req, res)=>{
+    sendEmail()
+    .then(response => res.send (response.message))
+    .catch(error => res.status(500).send(error.message))
+})
+// const transporter = nodemailer.createTransport({
+
+
+//   });
+
+//   
+
+
+
+//   await transporter.sendMail(mailOptions);
+
+
+
+
 
 
 mongoose.connection.once('open', function(){

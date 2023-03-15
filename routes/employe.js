@@ -3,6 +3,8 @@ const router = express.Router();
 const control1 = require('../controllers/livre');
 const control2 = require('../controllers/categorie');
 const control3 = require('../controllers/utilisateur');
+const control6 = require('../controllers/emprunt');
+
 
 
 
@@ -14,10 +16,10 @@ router.get('/utilisateurs', control3.afficherTousUtilisateurs);
 router.get('/utilisateurs/:id', control3.afficherUtilisateur);
 
 //modifier un utilisateur
-router.patch('/utilisateurs', control3.modifierUtilisateur)
+router.patch('/utilisateurs/:id', control3.modifierUtilisateur)
 
 //supprimer un utilisateur
-router.delete('/utilisateurs', control3.supprimerUtilisateur);
+router.delete('/utilisateurs/:id', control3.supprimerUtilisateur);
 
 
 
@@ -40,7 +42,7 @@ router.post('/livres', control1.ajouterLivre);
 
 
 //supprimer un livre
-router.delete('/livres', control1.supprimerLivre);
+router.delete('/livres/:id', control1.supprimerLivre);
 
 
 
@@ -63,11 +65,35 @@ router.post('/categories', control2.ajouterCategorie);
 
 
 //supprimer une catégorie
-router.delete('/categories', control2.supprimerCategorie);
+router.delete('/categories/:id', control2.supprimerCategorie);
 
 
 //modifier une catégorie
-router.patch('/categories', control2.modifierCategorie);
+router.patch('/categories/:id', control2.modifierCategorie);
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+
+
+
+
+//ajouter un emprunt
+router.post('/emprunts', control6.ajouterEmprunt);
+
+//renouvler un emprunt
+router.post('/renouveler-emprunt/:id', control6.renouvelerEmprunt);
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+//les statistiques////
+
+router.get('/statistiques/:role', control6.afficherStats);
 
 
 

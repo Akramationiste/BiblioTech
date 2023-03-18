@@ -16,7 +16,7 @@ router.get('/livres/:id', control1.afficherLivre);
 
 
 //afficher un livre par filtre
-router.get('/livres/', control1.afficherLivreFiltre);
+router.get('/livres_filtres', control1.afficherLivreFiltre);
 
 
 
@@ -79,8 +79,8 @@ router.patch('/reponses/:id', control5.modifierReponse);
 /////////////////////////////////////////////////////////////////
 
 
-//afficher une réponse
-router.get('/emprunt/:id', control6.obtenirHistorique);
+//afficher l'historique
+router.get('/emprunts/:id', control6.voirHistorique);
 
 
 

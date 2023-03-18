@@ -25,6 +25,17 @@ mongoose.connect('mongodb+srv://Fabrikademy:Fabrikademy@fabrikademy.utr52c0.mong
 app.listen(3000, () => console.log('Server started'));
 
 
+mongoose.connection.once('open', function(){
+    console.log('Connection has been made, abda takhdam...');
+}).on('error', function(error){
+    console.log('Connection error:', error);
+});
+
+
+
+////////////////////   SEND MAIL    ///////////////////////////////////////////
+
+
 function sendEmail() {
     return new Promise((resolve, reject) => {
         var transporter = nodemailer.createTransport({
@@ -56,27 +67,13 @@ app.get("/" , (req, res)=>{
     .then(response => res.send (response.message))
     .catch(error => res.status(500).send(error.message))
 })
-// const transporter = nodemailer.createTransport({
-
-
-//   });
-
-//   
-
-
-
-//   await transporter.sendMail(mailOptions);
 
 
 
 
 
 
-mongoose.connection.once('open', function(){
-    console.log('Connection has been made, abda takhdam...');
-}).on('error', function(error){
-    console.log('Connection error:', error);
-});
+
 
 app.use(express.json());
 

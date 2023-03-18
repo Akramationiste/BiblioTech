@@ -17,7 +17,7 @@ const EmpruntSchema = new mongoose.Schema({
     },
     date_retour: {
         type : Date,
-        required : true
+
     },
     jours: {
         type : Number,

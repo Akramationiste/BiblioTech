@@ -9,7 +9,7 @@ async function ajouterCategorie(req, res) {
   });
   try {
     const nouvelleCategorie = await categorie.save();
-    res.status(201).json(nouvelleCategorie);
+    res.status(201).json();
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -55,12 +55,15 @@ async function supprimerCategorie(req, res) {
 
 async function modifierCategorie(req, res) {
   try {
-    const categorieModifiee = await Categorie.findByIdAndUpdate(req.params.id, req.body);
+    const categorieModifiee = await Categorie.findByIdAndUpdate(req.params.id, {
+      nom_cat: req.body.nom_cat,
+      nbr_livres: req.body.nbr_livres
+    }, { new: true });
     res.json(categorieModifiee);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
-};
+}
 
 
 module.exports = {

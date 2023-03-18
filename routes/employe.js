@@ -4,6 +4,7 @@ const control1 = require('../controllers/livre');
 const control2 = require('../controllers/categorie');
 const control3 = require('../controllers/utilisateur');
 const control6 = require('../controllers/emprunt');
+const auth = require('../middlewhares/authm')
 
 
 
@@ -82,7 +83,7 @@ router.patch('/categories/:id', control2.modifierCategorie);
 router.post('/emprunts', control6.ajouterEmprunt);
 
 //renouvler un emprunt
-router.post('/renouveler-emprunt/:id', control6.renouvelerEmprunt);
+router.post('/renouveler_emprunts/:id', control6.renouvelerEmprunt);
 
 
 
@@ -93,7 +94,7 @@ router.post('/renouveler-emprunt/:id', control6.renouvelerEmprunt);
 
 //les statistiques////
 
-router.get('/statistiques/:role', control6.afficherStats);
+router.get('/statistiques', control6.afficherStats);
 
 
 

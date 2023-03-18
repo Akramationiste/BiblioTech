@@ -3,34 +3,28 @@ const Livre = require('../models/livre');
 const Utilisateur = require('../models/utilisateur');
 
 
-async function ajouterCommentaire(user_id, livre_id, comment) {
+async function ajouterCommentaire(req,res) {
+  const {user_id, livre_id, comment}=req.body
   const commentaire = new Commentaire({user_id, livre_id, comment});
   await commentaire.save();
 
   // Supprimer le commentaire si le livre commenté est supprimé
-
-  Livre.findById(livre_id, (err, livre) => {
-    if (err) throw err;
+  try {
+    const livre = await Livre.findById(livre_id);
     if (!livre) {
-      Commentaire.deleteOne({ _id: commentaire._id }, (err) => {
-        if (err) throw err;
-        console.log(`Commentaire avec l'id ${commentaire._id} supprimé car le livre associé est introuvable`);
-      });
+      await Commentaire.deleteOne({ _id: commentaire._id });
+      console.log(`Commentaire avec l'id ${commentaire._id} supprimé car le livre associé est introuvable`);
     }
-  });
-
-  // Supprimer le commentaire si l'utilisateur est supprimé
-
-  Utilisateur.findById(user_id, (err, utilisateur) => {
-    if (err) throw err;
+    const utilisateur = await Utilisateur.findById(user_id);
     if (!utilisateur) {
-      Commentaire.deleteOne({ _id: commentaire._id }, (err) => {
-        if (err) throw err;
-        console.log(`Commentaire avec l'id ${commentaire._id} supprimé car l'utilisateur associé est introuvable`);
-      });
+      await Commentaire.deleteOne({ _id: commentaire._id });
+      console.log(`Commentaire avec l'id ${commentaire._id} supprimé car l'utilisateur associé est introuvable`);
     }
-  });
+  } catch (err) {
+    console.log(err.message);
+  }
 }
+
 
 
 

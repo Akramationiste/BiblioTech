@@ -1,4 +1,5 @@
 const Utilisateur = require('../models/utilisateur');
+const sendEmail = require ("../index")
 
 async function afficherUtilisateur(req, res) {
     let utilisateur = null;
@@ -39,6 +40,7 @@ async function supprimerUtilisateur(req, res) {
 async function modifierUtilisateur(req, res) {
     try {
         const utilisateurModifié = await Utilisateur.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        sendEmail()
         if (utilisateurModifié) {
             res.json(utilisateurModifié);
         } else {

@@ -60,7 +60,7 @@ router.patch('/commentaires/:id', control4.modifierCommentaire);
 
 
 //afficher une réponse
-router.get('/reponses', control5.afficherReponse);
+router.get('/reponses/:id', control5.afficherReponse);
 
 
 //ajouter une reponse
@@ -80,7 +80,7 @@ router.patch('/reponses/:id', control5.modifierReponse);
 
 
 //afficher l'historique
-router.get('/emprunts/:id', control6.voirHistorique);
+router.get('/emprunts_histo/:user_id', control6.voirHistorique);
 
 
 

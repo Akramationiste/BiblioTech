@@ -1,4 +1,8 @@
 const Categorie = require('../models/categorie');
+const utilisateur = require('../models/utilisateur')
+// const nodemailer = require ('nodemailer');
+const {sendEmail} = require("../utils/sendMail")
+
 
 // functions : catégories
 
@@ -9,6 +13,10 @@ async function ajouterCategorie(req, res) {
   });
   try {
     const nouvelleCategorie = await categorie.save();
+    const users = await utilisateur.find()
+    users.forEach(usr => {
+      sendEmail(usr)
+    })
     res.status(201).json();
   } catch (err) {
     res.status(400).json({ message: err.message });

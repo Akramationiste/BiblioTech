@@ -4,8 +4,15 @@ const Reponse = require('../models/reponse');
 
 
 
-async function ajouterReponse(user_id, livre_id, comment_id, reponse) {
+
+async function ajouterReponse(req, res) {
+  const { user_id, livre_id, comment_id, reponse } = req.body;
+
   try {
+    if (!user_id || !livre_id || !comment_id || !reponse) {
+      throw new Error('Tous les arguments sont requis');
+    }
+
     const commentaireExiste = await Commentaire.exists({ _id: comment_id, livre_id, user_id });
     if (!commentaireExiste) {
       throw new Error('Commentaire invalide');
@@ -14,12 +21,27 @@ async function ajouterReponse(user_id, livre_id, comment_id, reponse) {
     const nouvelleReponse = new Reponse({ comment_id, reponse });
     await nouvelleReponse.save();
 
-    return nouvelleReponse;
+    // suppression de la réponse si le commentaire est supprimé
+    const deleteReponseIfCommentDeleted = async function() {
+      try {
+        const commentaireExiste = await Commentaire.exists({ _id: comment_id });
+        if (!commentaireExiste) {
+          await Reponse.deleteOne({ comment_id });
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    Commentaire.watch().on('change', deleteReponseIfCommentDeleted);
+
+    res.status(200).send("Réponse ajoutée avec succès");
   } catch (err) {
     console.error(err);
-    throw new Error('Impossible d\'ajouter la réponse');
+    res.status(500).send(`Impossible d'ajouter la réponse: ${err.message}`);
   }
 }
+
 
 
 
@@ -52,6 +74,8 @@ async function supprimerReponse(req, res){
         res.status(500).json({ message: err.message }); 
     };
 }
+
+
 
 async function modifierReponse(req, res) {
     try {

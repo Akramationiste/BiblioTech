@@ -32,18 +32,20 @@ async function ajouterEmprunt(req, res) {
       return res.status(400).json({ message: "Vous avez atteint votre limite d'emprunts" });
     }
 
-    const emprunt = new Emprunt({
-      user_id: req.body.user_id,
-      livre_id: req.body.livre_id,
-      date_emprunt: req.body.date_emprunt || new Date(),
-      jours: req.body.jours || 14
-    });
+const emprunt = new Emprunt({
+  user_id: req.body.user_id,
+  livre_id: req.body.livre_id,
+  date_emprunt: req.body.date_emprunt || new Date(),
+  jours: req.body.jours || 14,
+  date_retour: new Date(Date.now() + (req.body.jours || 14) * 24 * 60 * 60 * 1000) //calcul de la date de retour
+});
 
-    await emprunt.save();
-    livre.nbr_emprunt += 1;
-    await livre.save();
+await emprunt.save();
+livre.nbr_emprunt += 1;
+await livre.save();
 
-    res.status(201).json({ message: "Emprunt ajouté avec succès", emprunt });
+res.status(201).json({ message: "Emprunt ajouté avec succès", emprunt, date_retour: emprunt.date_retour });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -90,12 +92,13 @@ async function renouvelerEmprunt(empruntId) {
 
 async function voirHistorique(req, res) {
   try {
-    const emprunt = await Emprunt.find({ IdUser: req.params.id });
+    const emprunt = await Emprunt.find({ user_id: req.params.user_id });
     res.json(emprunt);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 }
+
 
   
 
@@ -106,16 +109,18 @@ async function voirHistorique(req, res) {
 
 async function afficherStats() {
   try {
-    const totalEmprunts = await Emprunt.countDocuments();
-    const totalLivres = await Livre.countDocuments();
-    const totalLecteurs = await Utilisateur.countDocuments({ role: "client" });
-    const livresPlusEmpruntes = await Emprunt.aggregate([
-      { $group: { _id: "$livre_id", count: { $sum: 1 } } },
-      { $lookup: { from: "livres", localField: "_id", foreignField: "_id", as: "livre" } },
-      { $unwind: "$livre" },
-      { $project: { titre: "$livre.titre", auteur: "$livre.auteur", count: 1 } },
-      { $sort: { count: -1 } },
-      { $limit: 3 }
+    const [totalEmprunts, totalLivres, totalLecteurs, livresPlusEmpruntes] = await Promise.all([
+      Emprunt.countDocuments(),
+      Livre.countDocuments(),
+      Utilisateur.countDocuments({ role: "client" }),
+      Emprunt.aggregate([
+        { $group: { _id: "$livre_id", count: { $sum: 1 } } },
+        { $lookup: { from: "livres", localField: "_id", foreignField: "_id", as: "livre" } },
+        { $unwind: "$livre" },
+        { $project: { titre: "$livre.titre", auteur: "$livre.auteur", count: 1 } },
+        { $sort: { count: -1 } },
+        { $limit: 3 }
+      ])
     ]);
 
     return { totalEmprunts, totalLivres, totalLecteurs, livresPlusEmpruntes };
@@ -123,6 +128,7 @@ async function afficherStats() {
     throw new Error(`Erreur lors de la récupération des statistiques : ${err.message}`);
   }
 }
+
 
 
 

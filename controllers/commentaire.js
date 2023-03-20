@@ -20,10 +20,13 @@ async function ajouterCommentaire(req,res) {
       await Commentaire.deleteOne({ _id: commentaire._id });
       console.log(`Commentaire avec l'id ${commentaire._id} supprimé car l'utilisateur associé est introuvable`);
     }
+    res.status(200).send("Commentaire ajouté avec succès");
   } catch (err) {
     console.log(err.message);
+    res.status(500).send("Erreur lors de l'ajout du commentaire");
   }
 }
+
 
 
 
@@ -60,13 +63,17 @@ async function supprimerCommentaire(req, res){
 
 
 async function modifierCommentaire(req, res) {
-    try {
-      const commentaireModifie = await Commentaire.findByIdAndUpdate(req.params.id, req.body);
+  try {
+      const commentaireModifie = await Commentaire.findByIdAndUpdate(req.params.id, req.body, {new: true});
+      if (!commentaireModifie) {
+          return res.status(404).json({message: "Le commentaire n'a pas été trouvé."});
+      }
       res.json(commentaireModifie);
-    } catch (err) {
+  } catch (err) {
       res.status(400).json({ message: err.message });
-    }
-  };
+  }
+};
+
 
 
 module.exports = {
